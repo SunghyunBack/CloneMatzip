@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.studymatzip.mappers.UserMapper">
+    <delete id="deleteRecoverEmailCode"
+            parameterType="com.example.studymatzip.entities.RecoverEmailCodeEntity">
+        DELETE
+        FROM `matzip`.`recover_email_codes`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </delete>
+
+    <insert id="insertRecoverContactCode"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.example.studymatzip.entities.RecoverContactCodeEntity">
+        INSERT INTO `matzip`.`recover_contact_codes` (`contact`, `code`, `salt`, `created_at`, `expires_at`, `expires_flag`)
+        VALUES (#{contact},
+                #{code},
+                #{salt},
+                IFNULL(#{createdAt}, DEFAULT(`created_at`)),
+                #{expiresAt},
+                IFNULL(#{isExpired}, DEFAULT(`expires_flag`)))
+    </insert>
+
+    <insert id="insertRecoverEmailCode"
+            parameterType="com.example.studymatzip.entities.RecoverEmailCodeEntity">
+        INSERT INTO `matzip`.`recover_email_codes` (`email`, `code`, `salt`, `created_at`, `expires_at`, `expired_flag`)
+            VALUE (#{email},
+                   #{code},
+                   #{salt},
+                   IFNULL(#{createdAt}, DEFAULT(`created_at`)),
+                   #{expiresAt},
+                   #{isExpired})
+    </insert>
+
+    <insert id="insertRegisterContactCode"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.example.studymatzip.entities.RegisterContactCodeEntity">
+        INSERT INTO `matzip`.`register_contact_codes` (`contact`, `code`, `salt`, `created_at`, `expires_at`, `expires_flag`)
+        VALUES (#{contact},
+                #{code},
+                #{salt},
+                IFNULL(#{createdAt}, DEFAULT(`created_at`)),
+                #{expiresAt},
+                IFNULL(#{isExpired}, DEFAULT(`expires_flag`)))
+    </insert>
+
+    <insert id="insertRegisterEmailCode"
+            parameterType="com.example.studymatzip.entities.RegisterEmailCodeEntity">
+        INSERT INTO `matzip`.`register_email_codes` (`email`, `code`, `salt`, `created_at`, `expires_at`, `expired_flag`)
+            VALUE (#{email},
+                   #{code},
+                   #{salt},
+                   IFNULL(#{createdAt}, DEFAULT(`created_at`)),
+                   #{expiresAt},
+                   #{isExpired})
+    </insert>
+
+    <insert id="insertUser"
+            parameterType="com.example.studymatzip.entities.UserEntity">
+        INSERT INTO `matzip`.`users` (`email`, `password`, `nickname`, `contact`, `status`, `admin_flag`, `registered_at`)
+            VALUE (#{email},
+                   #{password},
+                   #{nickname},
+                   #{contact},
+                   #{status},
+                   #{isAdmin},
+                   IFNULL(#{registeredAt}, DEFAULT(`registered_at`)))
+    </insert>
+
+    <select id="selectUserByEmail"
+            resultType="com.example.studymatzip.entities.UserEntity">
+        SELECT `email`         AS `email`,
+               `password`      AS `password`,
+               `nickname`      AS `nickname`,
+               `contact`       AS `contact`,
+               `status`        AS `status`,
+               `admin_flag`    AS `isAdmin`,
+               `registered_at` AS `registeredAt`
+        FROM `matzip`.`users`
+        WHERE BINARY `email` = #{email}
+        LIMIT 1
+    </select>
+
+    <select id="selectUserByNickname"
+            resultType="com.example.studymatzip.entities.UserEntity">
+        SELECT `email`         AS `email`,
+               `password`      AS `password`,
+               `nickname`      AS `nickname`,
+               `contact`       AS `contact`,
+               `status`        AS `status`,
+               `admin_flag`    AS `isAdmin`,
+               `registered_at` AS `registeredAt`
+        FROM `matzip`.`users`
+        WHERE BINARY `nickname` = #{nickname}
+        LIMIT 1
+    </select>
+
+    <select id="selectUserByContact"
+            resultType="com.example.studymatzip.entities.UserEntity">
+        SELECT `email`         AS `email`,
+               `password`      AS `password`,
+               `nickname`      AS `nickname`,
+               `contact`       AS `contact`,
+               `status`        AS `status`,
+               `admin_flag`    AS `isAdmin`,
+               `registered_at` AS `registeredAt`
+        FROM `matzip`.`users`
+        WHERE BINARY `contact` = #{contact}
+        LIMIT 1
+    </select>
+
+    <select id="selectRecoverContactCodeByContactCodeSalt"
+            parameterType="com.example.studymatzip.entities.RecoverContactCodeEntity"
+            resultType="com.example.studymatzip.entities.RecoverContactCodeEntity">
+        SELECT `index`        AS `index`,
+               `contact`      AS `contact`,
+               `code`         AS `code`,
+               `salt`         AS `salt`,
+               `created_at`   AS `createdAt`,
+               `expires_at`   AS `expiresAt`,
+               `expires_flag` AS `isExpired`
+        FROM `matzip`.`recover_contact_codes`
+        WHERE BINARY `contact` = #{contact}
+          AND BINARY `code` = #{code}
+          AND BINARY `salt` = #{salt}
+        LIMIT 1
+    </select>
+
+    <select id="selectRecoverEmailCodeByEmailCodeSalt"
+            parameterType="com.example.studymatzip.entities.RecoverEmailCodeEntity"
+            resultType="com.example.studymatzip.entities.RecoverEmailCodeEntity">
+        SELECT `index`        AS `index`,
+               `email`        AS `email`,
+               `code`         AS `code`,
+               `salt`         AS `salt`,
+               `created_at`   AS `createdAt`,
+               `expires_at`   AS `expiresAt`,
+               `expired_flag` AS `isExpired`
+        FROM `matzip`.`recover_email_codes`
+        WHERE BINARY `email` = #{email}
+          AND BINARY `code` = #{code}
+          AND BINARY `salt` = #{salt}
+        LIMIT 1
+    </select>
+
+    <select id="selectRegisterContactCodeByContactCodeSalt"
+            parameterType="com.example.studymatzip.entities.RegisterContactCodeEntity"
+            resultType="com.example.studymatzip.entities.RegisterContactCodeEntity">
+        SELECT `index`        AS `index`,
+               `contact`      AS `contact`,
+               `code`         AS `code`,
+               `salt`         AS `salt`,
+               `created_at`   AS `createdAt`,
+               `expires_at`   AS `expiresAt`,
+               `expires_flag` AS `isExpired`
+        FROM `matzip`.`register_contact_codes`
+        WHERE BINARY `contact` = #{contact}
+          AND BINARY `code` = #{code}
+          AND BINARY `salt` = #{salt}
+        LIMIT 1
+    </select>
+
+    <select id="selectRegisterEmailCodeByEmailCodeSalt"
+            parameterType="com.example.studymatzip.entities.RegisterEmailCodeEntity"
+            resultType="com.example.studymatzip.entities.RegisterEmailCodeEntity">
+        SELECT `index`        AS `index`,
+               `email`        AS `email`,
+               `code`         AS `code`,
+               `salt`         AS `salt`,
+               `created_at`   AS `createdAt`,
+               `expires_at`   AS `expiresAt`,
+               `expired_flag` AS `isExpired`
+        FROM `matzip`.`register_email_codes`
+        WHERE BINARY `email` = #{email}
+          AND BINARY `code` = #{code}
+          AND BINARY `salt` = #{salt}
+        LIMIT 1
+    </select>
+
+    <update id="updateUser"
+            parameterType="com.example.studymatzip.entities.UserEntity">
+        UPDATE `matzip`.`users`
+        SET `password`      = #{password},
+            `nickname`      = #{nickname},
+            `contact`       = #{contact},
+            `status`        = #{status},
+            `admin_flag`    = #{isAdmin},
+            `registered_at` = #{registeredAt}
+        WHERE `email` = #{email}
+        LIMIT 1
+    </update>
+
+    <update id="updateRecoverContactCode"
+            parameterType="com.example.studymatzip.entities.RecoverContactCodeEntity">
+        UPDATE `matzip`.`recover_contact_codes`
+        SET `contact`      = #{contact},
+            `code`         = #{code},
+            `salt`         = #{salt},
+            `created_at`   = #{createdAt},
+            `expires_at`   = #{expiresAt},
+            `expires_flag` = #{isExpired}
+        WHERE `index` = #{index}
+        LIMIT 1
+    </update>
+
+    <update id="updateRecoverEmailCode"
+            parameterType="com.example.studymatzip.entities.RecoverEmailCodeEntity">
+        UPDATE `matzip`.`recover_email_codes`
+        SET `email`        = #{email},
+            `code`         = #{code},
+            `salt`         = #{salt},
+            `created_at`   = #{createdAt},
+            `expires_at`   = #{expiresAt},
+            `expired_flag` = #{isExpired}
+        WHERE `index` = #{index}
+        LIMIT 1
+    </update>
+
+    <update id="updateRegisterContactCode"
+            parameterType="com.example.studymatzip.entities.RegisterContactCodeEntity">
+        UPDATE `matzip`.`register_contact_codes`
+        SET `contact`      = #{contact},
+            `code`         = #{code},
+            `salt`         = #{salt},
+            `created_at`   = #{createdAt},
+            `expires_at`   = #{expiresAt},
+            `expires_flag` = #{isExpired}
+        WHERE `index` = #{index}
+        LIMIT 1
+    </update>
+
+    <update id="updateRegisterEmailCode"
+            parameterType="com.example.studymatzip.entities.RegisterEmailCodeEntity">
+        UPDATE `matzip`.`register_email_codes`
+        SET `email`        = #{email},
+            `code`         = #{code},
+            `salt`         = #{salt},
+            `created_at`   = #{createdAt},
+            `expires_at`   = #{expiresAt},
+            `expired_flag` = #{isExpired}
+        WHERE `index` = #{index}
+        LIMIT 1
+    </update>
+</mapper>
+
+
+
+
+
+
+
+
+
